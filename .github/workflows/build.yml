@@ -1,0 +1,37 @@
+name: Build Rafiq Alhafiz APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract project ZIP
+        run: |
+          unzip -o RafiqAlHafiz-AndroidStudio-Project.zip -d project
+          find project -name settings.gradle -type f
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build APK
+        run: |
+          cd project/RafiqAlHafiz
+          gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rafiq-Alhafiz-APK
+          path: project/RafiqAlHafiz/app/build/outputs/apk/debug/*.apk
